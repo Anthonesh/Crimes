@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101113">
+  <meta name="description" content="Dossier 021 : une enquête interactive confidentielle. Toute ressemblance avec des sentiments bien réels serait parfaitement intentionnelle.">
+  <title>Dossier 021 | Le Crime impossible</title>
+  <style>
+    :root { color-scheme:dark; --night:#0e1112; --night2:#171b1c; --paper:#dfd2b8; --paper-light:#eee4cf; --paper-ink:#25231e; --muted:#adaaa3; --line:#363b3a; --blood:#a94b43; --bright:#e48d7e; --gold:#bda986; --green:#abb99b; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:#eee8dd; font-family:system-ui,-apple-system,'Segoe UI',sans-serif; line-height:1.6; background:radial-gradient(ellipse at 90% 3%,#37211e 0,transparent 36%),radial-gradient(ellipse at 3% 85%,#1d2a2a 0,transparent 48%),var(--night); min-height:100vh; overflow-x:hidden; }
+    body:before { content:""; pointer-events:none; position:fixed; inset:0; z-index:15; opacity:.13; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 210 210'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.81' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' opacity='.27' filter='url(%23n)' d='M0 0h210v210H0z'/%3E%3C/svg%3E"); }
+    button,input,summary { font:inherit; }
+    button { cursor:pointer; }
+    button:focus-visible,input:focus-visible,summary:focus-visible { outline:3px solid #eea18b; outline-offset:3px; }
+    button:disabled { cursor:not-allowed; opacity:.6; }
+    [hidden] { display:none !important; }
+    .shell { max-width:1120px; margin:auto; padding:0 clamp(18px,4vw,52px); }
+    .topbar { min-height:85px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #5a504b75; gap:14px; }
+    .identity { font-size:10px; letter-spacing:.20em; font-weight:800; line-height:1.55; color:#c7b5a1; }
+    .identity b { display:block; font-size:17px; letter-spacing:.08em; color:#f1ebe2; }
+    .head-actions { display:flex; gap:8px; }
+    .control { border:1px solid #655750; padding:9px 12px; min-height:41px; background:#15191abb; color:#e0d5c9; font-size:11px; font-weight:800; letter-spacing:.07em; }
+    .control:hover { background:#34302d; }
+    .grid-intro { display:grid; grid-template-columns:minmax(0,1.14fr) minmax(310px,.86fr); gap:clamp(35px,6vw,80px); align-items:center; padding:clamp(44px,6vw,95px) 0 clamp(52px,8vw,90px); }
+    .kicker { text-transform:uppercase; font-size:11px; font-weight:800; letter-spacing:.26em; color:#dd8278; display:flex; align-items:center; gap:11px; }
+    .kicker:before { content:""; display:inline-block; width:26px; height:1px; background:#cf7165; }
+    h1,h2,h3,p { margin-top:0; }
+    h1,h2.serif,.end-title { font-family:Georgia,'Times New Roman',serif; font-weight:400; letter-spacing:-.045em; }
+    h1 { font-size:clamp(55px,8.7vw,114px); line-height:1.01; margin:29px 0 30px; }
+    h1 em { color:var(--bright); font-weight:400; font-style:normal; }
+    .lead { font-size:clamp(16px,2vw,19px); line-height:1.9; color:#c7c5bc; max-width:560px; }
+    .lead strong { color:#f0e2d2; font-weight:600; }
+    .cta { border:1px solid #c65d52; background:linear-gradient(135deg,#b45448,#792b28); color:#fff5ed; min-height:55px; padding:13px 26px; text-transform:uppercase; letter-spacing:.12em; font-size:12px; font-weight:900; box-shadow:0 10px 27px #0005; transition:transform .2s,filter .2s; }
+    .cta:hover { transform:translateY(-2px); filter:brightness(1.13); }
+    .cta:active { transform:translateY(0); }
+    .intro-note { color:#96938a; font-size:12px; margin:18px 0 0; }
+    .file-cover { position:relative; background:linear-gradient(145deg,#e0d1b2,#b6a484); transform:rotate(2deg); padding:clamp(26px,4vw,48px); color:#302a22; min-height:430px; box-shadow:10px 18px 0 #090a09, 20px 26px 55px #000a; border-radius:3px; }
+    .file-cover:before { content:""; position:absolute; width:85px; height:20px; top:-12px; left:39%; border-radius:5px; background:linear-gradient(#777c79,#dad5c9 45%,#77736b); box-shadow:0 3px 7px #0009; }
+    .cover-meta { text-transform:uppercase; letter-spacing:.2em; font-size:10px; font-weight:900; border-bottom:2px solid #574c3c; padding-bottom:22px; }
+    .cover-no { font-family:Georgia,serif; font-size:clamp(83px,9vw,125px); line-height:1.1; margin-top:30px; }
+    .cover-title { font-family:Georgia,serif; font-size:28px; line-height:1.2; margin:4px 0 14px; }
+    .redaction { display:inline-block; background:#262824; color:#262824; width:170px; height:17px; vertical-align:middle; }
+    .cover-detail { border-top:1px solid #756954; margin-top:32px; padding-top:18px; font-size:11px; letter-spacing:.13em; font-weight:800; text-transform:uppercase; color:#554c3f; }
+    .seal { transform:rotate(-12deg); border:4px double #99433c; display:inline-block; padding:8px 17px; color:#9d403a; font-size:15px; letter-spacing:.1em; line-height:1.25; font-weight:900; text-align:center; margin-top:23px; }
+    .disclaimer { text-align:center; padding:22px 0 34px; border-top:1px solid #3a3936; color:#88847d; font-size:10px; letter-spacing:.11em; text-transform:uppercase; }
+    .case-head { display:flex; align-items:end; justify-content:space-between; gap:20px; padding:35px 0 21px; }
+    .case-head h2 { margin:9px 0 3px; font:400 clamp(31px,4.4vw,51px)/1.14 Georgia,serif; letter-spacing:-.045em; }
+    .case-head small { color:#b4aba0; font-size:13px; }
+    .case-count { font-size:12px; letter-spacing:.14em; color:#c9ac9e; font-weight:900; white-space:nowrap; }
+    .progress { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-bottom:24px; }
+    .progress i { height:4px; background:#48443f; border-radius:2px; }
+    .progress i.done { background:#a64b43; }
+    .workspace { display:grid; grid-template-columns:minmax(0,1fr) 265px; gap:26px; align-items:start; margin-bottom:75px; }
+    .sheet { background:var(--paper); color:var(--paper-ink); box-shadow:0 12px 0 #070807,0 22px 65px #0009; border:1px solid #aa987d; padding:clamp(22px,4.5vw,47px); position:relative; min-height:560px; background-image:repeating-linear-gradient(0deg,transparent 0,transparent 34px,#332f2209 35px); }
+    .sheet:before { content:""; position:absolute; left:24px; top:0; width:36px; height:7px; background:#8b4b43; }
+    .paper-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; font-size:10px; text-transform:uppercase; font-weight:900; letter-spacing:.14em; border-bottom:2px solid #61513d; padding-bottom:15px; }
+    .paper-num { color:#8c3934; }
+    .paper-title { font:400 clamp(34px,4.8vw,57px)/1.06 Georgia,serif; letter-spacing:-.04em; margin:28px 0 20px; }
+    .paper-copy { font:16px/1.72 Georgia,serif; color:#4a3e32; }
+    .paper-copy strong { color:#252019; }
+    .divider { border:0; border-top:1px solid #a79a81; margin:25px 0; }
+    .note { background:#1e2425; padding:17px 19px; color:#e2d5c4; margin:20px 0; border-left:4px solid #a74a42; font-size:13px; line-height:1.75; }
+    .note b { font-size:10px; letter-spacing:.15em; display:block; color:#e7a499; margin-bottom:7px; }
+    .note em { color:#d4c8b6; }
+    .tags { display:flex; flex-wrap:wrap; gap:7px; margin:17px 0; }
+    .tag { border:1px solid #87775f; padding:4px 8px; text-transform:uppercase; font-size:10px; font-weight:800; letter-spacing:.1em; }
+    .evidence { background:#f1e7d3; border:1px solid #a99a80; margin:18px 0; padding:18px; }
+    .evidence h4 { margin:0 0 8px; font-size:11px; text-transform:uppercase; letter-spacing:.15em; color:#7b433d; }
+    .evidence p { font:17px/1.55 Georgia,serif; margin:6px 0; }
+    .evidence .small { color:#746753; font-size:12px; font-family:system-ui,sans-serif; }
+    .card-row { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:18px 0; }
+    .tiny-card { background:#f0e5cb; border:1px solid #a99b83; padding:14px 12px; min-height:136px; }
+    .tiny-card .digit { font:44px/1 Georgia,serif; color:#8e443d; }
+    .tiny-card h4 { font-size:10px; text-transform:uppercase; letter-spacing:.1em; margin:14px 0 5px; }
+    .tiny-card p { font-size:11px; line-height:1.5; color:#665b4c; margin:0; }
+    .form-label { font-weight:900; font-size:11px; text-transform:uppercase; letter-spacing:.12em; display:block; margin:20px 0 10px; }
+    .input-row { display:flex; gap:9px; }
+    .input-row input, .triple input { border:1px solid #867761; color:#28221c; background:#f7f0e0; border-radius:0; padding:12px 10px; font-size:20px; min-width:0; width:100%; text-align:center; text-transform:uppercase; letter-spacing:.12em; }
+    .paper-button { border:1px solid #362d28; color:#fff0db; background:#312a26; font-size:12px; font-weight:900; letter-spacing:.08em; padding:13px 17px; min-height:48px; }
+    .paper-button:hover { background:#6d3c35; }
+    .triple { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .triple label { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#725943; font-weight:900; }
+    .triple input { display:block; margin-top:7px; }
+    .status { min-height:25px; margin:12px 0; color:#8b3831; font-size:13px; font-weight:800; }
+    .status.ok { color:#3f693e; }
+    .choice { display:block; width:100%; margin:10px 0; text-align:left; padding:15px; border:1px solid #a99c86; background:#eee1c6; color:#342a24; font:16px/1.5 Georgia,serif; }
+    .choice:hover { background:#fff3db; border-color:#8e473f; }
+    .choice.right { background:#d2ddc4; border-color:#577b50; }
+    .next { display:none; border-top:1px solid #a79981; margin-top:26px; padding-top:20px; align-items:center; justify-content:space-between; gap:14px; }
+    .next.visible { display:flex; }
+    .next p { margin:0; color:#4b6644; font:italic 15px/1.5 Georgia,serif; }
+    .side { background:linear-gradient(160deg,#232828,#16191b); border:1px solid #52504a; padding:21px; color:#c7c6be; }
+    .side h3 { font-size:11px; letter-spacing:.2em; color:#e18e7b; text-transform:uppercase; margin-bottom:17px; }
+    .side p { font-size:13px; line-height:1.75; }
+    .side hr { border:0; border-top:1px solid #4b4742; margin:18px 0; }
+    .side strong { color:#efe3d3; }
+    .side-footer { font:11px/1.7 ui-monospace,Consolas,monospace; letter-spacing:.07em; color:#8c8d89; }
+    .audio-box { margin:22px 0; border:1px solid #8f7b66; background:#cabb9f; padding:16px; color:#2f2822; }
+    .audio-label { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; text-transform:uppercase; font-size:10px; font-weight:900; letter-spacing:.11em; border-bottom:1px solid #a08d72; padding-bottom:10px; }
+    .audio-label span:first-child { color:#8d3d37; }
+    .audio-box audio { display:none; width:100%; margin:15px 0 6px; height:42px; }
+    .audio-box audio.ready { display:block; }
+    .audio-status { font-size:12px; color:#635343; margin:12px 0; }
+    .wave { display:flex; align-items:center; justify-content:center; gap:3px; height:43px; margin:7px 0; }
+    .wave i { display:block; width:3px; border-radius:3px; background:#744540; }
+    details { margin-top:9px; }
+    summary { cursor:pointer; font-size:11px; font-weight:900; letter-spacing:.06em; color:#7c3e36; padding:8px 0; text-transform:uppercase; }
+    details .transcript { font:15px/1.76 Georgia,serif; white-space:pre-line; background:#eee3cc; padding:13px 15px; border-left:3px solid #9a564a; }
+    /* Optional photographic evidence: initially obscured, revealed only by a deliberate click. */
+    .photo-case { margin:26px auto 24px; max-width:440px; text-align:center; }
+    .photo { background:radial-gradient(ellipse at center,#57524e,#18191b 70%); border:9px solid #f0e7d0; box-shadow:0 10px 23px #0007; height:clamp(210px,52vw,330px); display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; overflow:hidden; transform:rotate(-1.25deg); }
+    .photo img { display:none; width:100%; height:100%; object-fit:contain; position:absolute; inset:0; filter:blur(22px) brightness(.34) grayscale(.2); transform:scale(1.10); transition:filter .75s ease,transform .75s ease; }
+    .photo.has-image img { display:block; }
+    .photo.revealed img { filter:none; transform:scale(1); }
+    .photo:before { content:"PIÈCE PHOTOGRAPHIQUE 04"; position:absolute; z-index:2; top:8px; left:0; right:0; font:900 10px system-ui,sans-serif; letter-spacing:.14em; color:#f3e9dc; text-shadow:0 1px 8px #000; pointer-events:none; }
+    .censored { position:relative; z-index:2; background:#111; color:#e3c2b4; border:1px solid #a34e48; font-size:12px; font-weight:900; letter-spacing:.14em; text-transform:uppercase; padding:10px 15px; transform:rotate(3deg); text-align:center; max-width:90%; box-shadow:0 3px 12px #0009; }
+    .photo.revealed .censored { display:none; }
+    .photo small { position:absolute; z-index:2; bottom:10px; color:#eaded1; font-size:10px; text-shadow:0 2px 5px #000; pointer-events:none; }
+    .photo.revealed small { background:#131514bd; padding:3px 8px; }
+    .photo-action { margin:20px auto 0; display:block; max-width:100%; }
+    .photo-status { color:#5f4a39; font-size:12px; line-height:1.65; margin:11px 0 0; }
+    .photo-reveal-note { display:none; color:#873e36; font:italic 15px/1.6 Georgia,serif; margin:12px auto; }
+    .photo-reveal-note.visible { display:block; }
+    @media(prefers-reduced-motion:reduce) { .photo img { transition:none; } }
+    .report { border:2px double #81705b; padding:15px 18px; margin:22px 0; background:#e9ddc6; }
+    .report-row { display:flex; gap:20px; justify-content:space-between; border-bottom:1px dotted #9e8b70; padding:9px 0; font:14px/1.5 Georgia,serif; }
+    .report-row span:last-child { text-align:right; font-weight:bold; }
+    .report-row:last-child { border:none; }
+    .confession { padding:clamp(45px,7vw,105px) 0 75px; max-width:780px; margin:auto; text-align:center; }
+    .confession h2 { font:400 clamp(47px,8vw,86px)/1.09 Georgia,serif; letter-spacing:-.05em; margin:24px 0; }
+    .confession h2 em { font-style:normal; color:var(--bright); }
+    .confession p { color:#c1bcb2; line-height:1.9; }
+    .confession .audio-box { margin:34px auto; max-width:630px; text-align:left; background:#1d2222; color:#ead6c8; border-color:#68504a; }
+    .confession .audio-label { border-color:#5b4a42; }
+    .confession .audio-status { color:#c4afa4; }
+    .confession summary { color:#e2a18f; }
+    .confession .audio-label span:first-child { color:#eea48d; }
+    .confession details .transcript { background:#292a28; color:#efdfcf; border-color:#a64f45; }
+    .confession .wave i { background:#c98779; }
+    .file-note { color:#a69f91 !important; font:11px/1.7 ui-monospace,Consolas,monospace !important; text-transform:uppercase; letter-spacing:.09em; }
+    .end-scene { min-height:calc(100svh - 85px); padding:70px 10px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; }
+    .end-scene .end-title { font-size:clamp(48px,8vw,91px); line-height:1.1; max-width:780px; margin:20px 0 32px; }
+    .end-scene .end-title span { color:var(--bright); }
+    .end-scene .end-body { font:clamp(18px,2.4vw,24px)/1.8 Georgia,serif; color:#e5dbd0; max-width:640px; }
+    .heart { color:#c34d49; font-size:70px; line-height:1; animation:pulse 1.6s infinite; text-shadow:0 0 35px #c9484844; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 22%{transform:scale(1.12)} 45%{transform:scale(.98)} }
+    .final-stamp { margin:34px auto 22px; transform:rotate(-5deg); border:3px double #d48376; padding:13px 20px; font-weight:900; letter-spacing:.13em; color:#f0a18f; text-transform:uppercase; font-size:13px; }
+    .end-foot { margin-top:18px; font-size:12px; color:#96958e; }
+    .final-endnote { margin:24px 0 8px; color:#d3b4a5; font:italic 17px Georgia,serif; }
+    .fade { animation:appear .35s ease-out; }
+    @keyframes appear { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .screen-reader { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+    @media(max-width:820px) { .grid-intro { grid-template-columns:1fr; max-width:650px; margin:auto; } .file-cover { max-width:430px; width:94%; margin:auto; min-height:365px; } .workspace { grid-template-columns:1fr; } .side { order:2; } }
+    @media(max-width:550px) { .shell { padding:0 15px; } .topbar { min-height:72px; gap:8px; } .identity { font-size:8px; } .identity b { font-size:13px; } .head-actions { gap:6px; } .control { font-size:9px; padding:8px 7px; } .grid-intro { padding:45px 0 62px; } h1 { font-size:clamp(57px,15vw,77px); } .file-cover { padding:24px; } .case-head h2 { font-size:36px; } .case-count { font-size:10px; } .paper-head { font-size:9px; } .paper-title { font-size:37px; } .sheet { padding:24px 19px; min-height:450px; } .card-row { gap:6px; } .tiny-card { padding:13px 7px; min-height:125px; } .tiny-card .digit { font-size:36px; } .triple { gap:6px; } .triple label { font-size:9px; } .triple input { font-size:19px; } .next.visible { flex-direction:column; align-items:stretch; } .input-row { flex-direction:column; } .audio-label { font-size:9px; } .confession h2 { font-size:54px; } }
+    @media(prefers-reduced-motion:reduce) { *,*:before,*:after { animation:none !important; scroll-behavior:auto !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="identity">BUREAU DES AFFAIRES NON CLASSÉES <b>DOSSIER 021 / CONFIDENTIEL</b></div>
+      <div class="head-actions">
+        <button id="effects" class="control" type="button" aria-pressed="false" title="Petits effets sonores facultatifs">♪ EFFETS : NON</button>
+        <button id="restart" class="control" type="button">↻ RECOMMENCER</button>
+      </div>
+    </header>
+    <main>
+      <section id="intro" class="fade">
+        <div class="grid-intro">
+          <div>
+            <div class="kicker">Archives spéciales · Affaire non élucidée</div>
+            <h1>Le crime<br><em>impossible.</em></h1>
+            <p class="lead">Un individu présente des symptômes inexplicables. Les dossiers s'accumulent, mais aucune infraction ne correspond aux faits. <strong>Quelque chose lui est arrivé. Personne ne sait quoi.</strong></p>
+            <p class="lead"><strong>Quatre pièces à conviction. Trois enregistrements. Un dernier scellé.</strong></p>
+            <button class="cta" id="start" type="button">OUVRIR LE DOSSIER <span aria-hidden="true">→</span></button>
+            <p class="intro-note">Lecture recommandée au calme · Écouteurs conseillés · Enquête fictive</p>
+          </div>
+          <div class="file-cover" aria-label="Couverture de dossier d'enquête 021">
+            <div class="cover-meta">Bureau central des investigations<br>ARCHIVE 21 / C</div>
+            <div class="cover-no">021.</div>
+            <div class="cover-title">Infraction de nature<br>indéterminée.</div>
+            <div class="redaction" aria-hidden="true"></div>
+            <div class="cover-detail">Sujet : vivant<br>Victime : non identifiée<br>Mobile : inconnu</div>
+            <div class="seal">AFFAIRE<br>NON CLASSÉE</div>
+          </div>
+        </div>
+      </section>
+      <section id="investigation" hidden class="fade">
+        <div class="case-head">
+          <div><div class="kicker" id="chapter-kicker">ARCHIVE / 01</div><h2 id="chapter-title">La première trace</h2><small id="chapter-subtitle">Analyse d'une pièce à conviction.</small></div>
+          <div class="case-count" id="case-count">01 / 04</div>
+        </div>
+        <div class="progress" id="progress" aria-label="Progression dans l'enquête"><i></i><i></i><i></i><i></i></div>
+        <div class="workspace">
+          <article class="sheet" id="sheet" aria-live="polite"></article>
+          <aside class="side">
+            <h3>Note de l'enquêteur</h3>
+            <div id="side-body"></div>
+            <hr>
+            <div class="side-footer">DOCUMENT DE FICTION<br>ACCÈS : RESTREINT<br>IDENTIFIANT : D021 / M</div>
+          </aside>
+        </div>
+      </section>
+      <section id="confession" hidden class="fade">
+        <div class="confession">
+          <div class="kicker" style="justify-content:center">Archive 05 / Audition déclassifiée</div>
+          <h2>La dernière<br><em>déposition.</em></h2>
+          <p>Le suspect a demandé à faire une déclaration spontanée. Aucune question supplémentaire ne sera posée. Pour la première fois, l'enregistrement n'a subi aucune modification.</p>
+          <div id="final-recording"></div>
+          <p class="file-note">Écoute cet enregistrement avant de consulter le verdict.</p>
+          <button class="cta" id="show-verdict" type="button">CONSULTER LE VERDICT →</button>
+        </div>
+      </section>
+      <section id="ending" hidden class="fade">
+        <div class="end-scene">
+          <div class="kicker">Rapport définitif · Dossier 021</div>
+          <h2 class="end-title">Il n'y avait<br><span>aucun crime.</span></h2>
+          <p class="end-body">Seulement deux personnes qui n'avaient rien prévu.<br>Une rencontre improbable.<br>Et un homme devenu follement amoureux.</p>
+          <div class="heart" aria-label="Cœur">♥</div>
+          <p class="end-body" style="margin:25px 0 0">Je t'aime, Melody.</p>
+          <div class="final-stamp">AFFAIRE CLASSÉE<br>AMOUR RÉCIPROQUE</div>
+          <p class="final-endnote">Note additionnelle : la photographie du doigt demeure inexplicable.</p>
+          <p class="end-foot">Les enquêteurs recommandent de ne surtout rien changer.</p>
+          <button class="control" type="button" id="play-again" style="margin-top:24px">↻ RELIRE LE DOSSIER</button>
+        </div>
+      </section>
+    </main>
+    <footer class="disclaimer">Toute cette affaire est une fiction. Aucun crime réel, aucune victime réelle. Les sentiments, en revanche, sont authentiques.</footer>
+  </div>
+  <script>
+  'use strict';
+  // Add your own evidence photo in photo/ using one of the supported filenames.
+  // The browser checks these paths locally. No external service or upload is used.
+  const PHOTO_CANDIDATES = Object.freeze([
+    'photo/doigt.jpg', 'photo/doigt.jpeg', 'photo/doigt.png', 'photo/doigt.webp'
+  ]);
+  // Place your three MP3 files in the audio/ folder. Nothing is uploaded anywhere.
+  const AUDIO = Object.freeze({
+    anonymous:'audio/01_temoignage_anonyme.mp3',
+    interview:'audio/02_interrogatoire.mp3',
+    confession:'audio/03_confession_finale.mp3'
+  });
+  // These are reference scripts. Adapt the first two transcripts if your recording differs.
+  const SCRIPTS = Object.freeze({
+    anonymous:`Je n'ai pas su immédiatement à quel moment les choses ont changées.\n\nAu commencement, il n'y avait qu'un profil sur une application. \n\nUn mot presque rassurant, "Amitiés".\n\nEt cette étrange chouette blanche, comme si quelqu'un avait laissé un indice volontairement. \n\n À partir de là, le sujet n'a plus jamais été le même.\n\n Je crois que les premiers signes étaient déjà présents.\n\n`,
+    interview:`ENQUÊTEUR : Interrogatoire numéro 021. Le sujet est invité à s'expliquer sur une photographie jugée particulièrement préoccupante.\n\nENQUÊTEUR : Vous reconnaissez avoir envoyé une photographie compromettante malgré les avertissements de la jeune femme ?\n\nSUSPECT : Je conteste le terme compromettante.\n\nENQUÊTEUR : Vous avez photographié votre doigt à travers votre braguette.\n\nSUSPECT : C'était une démarche artistique.\n\nENQUÊTEUR : Vous aviez écrit son prénom dessus.\n\nSUSPECT : Une démarche artistique personnalisée.\n\nENQUÊTEUR : Vous comprenez que votre comportement puisse paraître inquiétant ?\n\nSUSPECT : Absolument. Le plus inquiétant, c'est que ça ait fonctionné.`,
+    confession:`Tu sais, Melody...\n\nDepuis le début de cette enquête, tu cherches à comprendre ce qui s'est passé.\n\nUn suspect. Des preuves. Des témoignages.\n\nEt surtout... un crime que personne ne parvient réellement à expliquer.\n\nTout ce que tu aimes en soit\n\nMais il y a quelque chose que les enquêteurs n'ont pas compris.\n\nIl n'y a pas eu de meurtre.\n\nPas de violence.\n\nPas même de victime.\n\nEnfin... ça dépend de ce qu'on appelle une victime.\n\nParce qu'il y a bien un homme qui a complètement perdu la tête dans cette histoire.\n\nUn homme qui pensait encore maîtriser un minimum sa vie.\n\nEt puis un jour, il est tombé sur le profil d'une fille.\n\nUne fille qui prétendait ne chercher que de l'amitié.\n\nUne jolie fille avec une peluche Edwige, qui précisait très clairement qu'elle ne voulait pas recevoir de photos de penis...\n\nEt un imbécile qui a quand même trouvé le bon moyen de lui envoyer une photo de son doigt à travers sa braguette son prénom d'écrit dessus.\n\nFranchement... comment tu veux expliquer notre histoire à quelqu'un de normalement constitué ?\n\nMais tu sais ce qui est encore plus fou ?\n\nC'est que derrière toutes nos conneries, nos délires et nos provocations...\n\nIl s'est passé quelque chose que je n'avais absolument pas prévu.\n\nJe suis tombé amoureux de toi... Melody\n\nPas juste un peu.\n\nPas juste parce que tu me fais rire, parce que tu es belle ou parce que tu me rends complètement dingue.\n\nMais parce qu'avec toi, j'ai découvert quelque chose que je n'attendais plus forcément.\n\nCette envie de te retrouver.\n\nCe manque au quotidien.\n\nCette envie de t'embrasser encore, même quand je viens de le faire.\n\nDe te raconter n'importe quoi, juste pour entendre ton rire.\n\nD'entendre ta petite voix adorable le matin au réveil.\n\nEt tu sais ce qui me fait sourire aujourd'hui ?\n\nC'est que pour une fois, je n'ai pas envie de comprendre, je n'ai plus envie.\n\nJ'ai juste envie de le vivre.\n\nAvec toi.\n\nEncore et encore.\n\nPour toujours même\n\nParce que je t'aime.\n\nÉnormément... et tu le sais\n\nEt que je ne changerais absolument rien à notre histoire.\n\nMême pas cette foutue photo.`
+  });
+  const $ = selector=>document.querySelector(selector);
+  const TITLES = [
+    ['PIÈCE 01 / PROFIL SAISI','Une présence dans les archives.',"L’origine du dossier n’est pas celle que l’on croyait."],
+    ['PIÈCE 02 / SCELLÉ NUMÉRIQUE','Les chiffres du dossier.','Trois éléments sans rapport apparent.'],
+    ['PIÈCE 03 / INTERROGATOIRE','La preuve compromettante.','Un enregistrement qui défie la logique judiciaire.'],
+    ['PIÈCE 04 / EXPERTISE','Le rapport impossible.','Les faits sont incontestables. Leur interprétation ne l’est pas.']
+  ];
+  const SCREENS=['intro','investigation','confession','ending'];
+  let chapter=0, solved=false, attempts=0, soundOn=false, audioContext;
+  function scrollUp(){ window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}); }
+  function show(screen){
+    SCREENS.forEach(id=>{$('#'+id).hidden=id!==screen;});
+    document.querySelectorAll('audio').forEach(el=>el.pause());
+    scrollUp();
+  }
+  function beep(f=460){
+    if(!soundOn)return;
+    try { audioContext ||= new (window.AudioContext||window.webkitAudioContext)(); const o=audioContext.createOscillator(),g=audioContext.createGain(); o.type='sine'; o.frequency.value=f; g.gain.setValueAtTime(.035,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+.065); o.connect(g).connect(audioContext.destination);o.start();o.stop(audioContext.currentTime+.07); }catch(_){ /* Sound is optional */ }
+  }
+  function audioWidget(key,title){
+    return `<div class="audio-box" data-recording="${key}">
+      <div class="audio-label"><span>◉ BANDE SONORE · ${title}</span><span>ENR. 0${key==='anonymous'?1:key==='interview'?2:3}</span></div>
+      <div class="wave" aria-hidden="true">${Array.from({length:32},(_,i)=>`<i style="height:${6+Math.round(Math.abs(Math.sin(i*1.92)*Math.cos(i*.38))*30)}px"></i>`).join('')}</div>
+      <audio controls preload="metadata" aria-label="${title}"></audio>
+      <p class="audio-status" aria-live="polite">Recherche de l'enregistrement…</p>
+      <details><summary>${key==='confession'?'Lire la confession':'Consulter la transcription de référence'}</summary><div class="transcript"></div></details>
+    </div>`;
+  }
+  function installAudio(container){
+    container.querySelectorAll('[data-recording]').forEach(box=>{
+      const key=box.dataset.recording, player=box.querySelector('audio'), status=box.querySelector('.audio-status');
+      box.querySelector('.transcript').textContent=SCRIPTS[key];
+      const missing=()=>{player.classList.remove('ready');status.textContent='Enregistrement MP3 non présent. La version écrite est disponible juste en dessous.';};
+      const ready=()=>{player.classList.add('ready');status.textContent='Bande retrouvée. Appuie sur lecture pour écouter.';};
+      player.addEventListener('loadedmetadata',ready);
+      player.addEventListener('error',missing);
+      player.src=AUDIO[key];
+      player.load();
+      window.setTimeout(()=>{ if(!box.isConnected)return; if(player.readyState<1 && !player.error)status.textContent='Enregistrement non chargé. Tu peux toujours consulter le texte ci-dessous.'; },4500);
+    });
+  }
+  function paper(code,title,body){$('#sheet').innerHTML=`<div class="paper-head"><span>BRIGADE 021 / DOCUMENT SOUS SCELLÉS</span><span class="paper-num">${code}</span></div><h3 class="paper-title">${title}</h3>${body}<div class="next" id="next"><p id="next-text">Pièce validée.</p><button class="paper-button" id="next-button" type="button">PIÈCE SUIVANTE →</button></div>`;}
+  function feedback(message,ok=false){let el=$('#feedback');if(el){el.textContent=message;el.classList.toggle('ok',ok)} }
+  function solve(message){if(solved)return;solved=true;$('#next').classList.add('visible');$('#next-text').textContent=message;$('#next-button').textContent=chapter===3?'OUVRIR LA DÉPOSITION →':'PIÈCE SUIVANTE →';$('#next-button').addEventListener('click',()=>{beep(550);if(chapter===3){show('confession');setupConfession();}else{chapter++;loadChapter();}});beep(630);}
+  function loadChapter(){
+    solved=false;attempts=0;
+    $('#chapter-kicker').textContent=TITLES[chapter][0];$('#chapter-title').textContent=TITLES[chapter][1];$('#chapter-subtitle').textContent=TITLES[chapter][2];$('#case-count').textContent=`0${chapter+1} / 04`;
+    $$('#progress i').forEach((el,i)=>el.classList.toggle('done',i<=chapter));
+    [renderProfile,renderNumbers,renderInterview,renderReport][chapter]();
+    installAudio($('#sheet'));
+    show('investigation');
+  }
+  function $$(sel){return document.querySelectorAll(sel)}
+  function renderProfile(){
+    paper('DOCUMENT 01-A','Profil sous surveillance.',`
+      <p class="paper-copy">Le premier élément saisi provient d'une application de rencontres. Aucun témoin ne confirme une rencontre physique à ce stade. L'application, elle, se contente d'affirmer beaucoup de choses.</p>
+      <div class="evidence"><h4>Archive numérique · happn</h4><p><strong>Intention déclarée :</strong> « Amitiés »</p><p><strong>Consigne :</strong> aucune photographie anatomique non sollicitée.</p><p class="small">Photographie associée : jeune femme, peluche de chouette blanche, référence probable à une école de sorcellerie.</p></div>
+      <div class="note"><b>OBSERVATION DU SERVICE</b>Le sujet masculin décrit une présence devenue envahissante dans ses pensées. Aucun antécédent similaire dans le dossier. Il semble parler d'une chouette comme d'un témoin capital.</div>
+      ${audioWidget('anonymous','Témoignage anonyme')}
+      <label class="form-label" for="owl-answer">Identifier le témoin à plumes</label><p class="paper-copy" style="margin-bottom:9px">Il accompagne Harry Potter. Son nom figure dans les premières pièces du dossier.</p>
+      <form id="owl-form" class="input-row"><input id="owl-answer" type="text" maxlength="28" autocomplete="off" placeholder="Nom du témoin" required aria-label="Nom de la chouette"><button class="paper-button" type="submit">VÉRIFIER</button></form><p id="feedback" class="status" role="status"></p>`);
+    $('#side-body').innerHTML='<p>Le profil indiquait <strong>« Amitiés »</strong>. À première vue, rien de suspect.</p><p>Mais pourquoi une chouette blanche apparaît-elle dans plusieurs témoignages ?</p><p><strong>Objectif :</strong> identifier le témoin.</p>';
+    $('#owl-form').addEventListener('submit',e=>{e.preventDefault();const val=$('#owl-answer').value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();if(['edwige','hedwige'].includes(val)){ $('#owl-answer').disabled=true;$('#owl-form button').disabled=true;feedback('Témoin identifié : Edwige. La chouette refuse de témoigner.',true);solve('Le profil vient d’être authentifié. Une seconde archive a été retrouvée.'); }else{attempts++;feedback(attempts===1?'Nom non reconnu. Pense à la chouette de Harry Potter.':'Indice : six lettres, le nom commence par E.');}});
+  }
+  function renderNumbers(){
+    paper('DOCUMENT 02-B','Scellé à trois entrées.',`
+      <p class="paper-copy">Les analystes ont trouvé trois nombres griffonnés sur des documents indépendants. Ils permettent l'ouverture d'un scellé. L'ordre d'entrée a été effacé, mais les étiquettes subsistent.</p>
+      <div class="card-row">
+        <div class="tiny-card"><div class="digit">16</div><h4>Calendrier</h4><p>Jour de la rencontre.</p></div>
+        <div class="tiny-card"><div class="digit">43</div><h4>Répertoire</h4><p>Numéro de rue.</p></div>
+        <div class="tiny-card"><div class="digit">26</div><h4>Registre</h4><p>Numéro d'appartement.</p></div>
+      </div>
+      <div class="note"><b>PROCÉDURE DE DÉCHIFFREMENT</b>Le scellé attend trois valeurs, dans cet ordre : <strong>RUE → APPARTEMENT → JOUR</strong>. Aucun nom de rue ni adresse complète ne figure dans ce dossier.</div>
+      <form id="code-form"><div class="triple">
+        <label for="code-street">Rue<input id="code-street" inputmode="numeric" maxlength="2" pattern="[0-9]{1,2}" required placeholder="··"></label>
+        <label for="code-apt">Appartement<input id="code-apt" inputmode="numeric" maxlength="2" pattern="[0-9]{1,2}" required placeholder="··"></label>
+        <label for="code-day">Jour<input id="code-day" inputmode="numeric" maxlength="2" pattern="[0-9]{1,2}" required placeholder="··"></label>
+      </div><button class="paper-button" style="margin-top:16px;width:100%" type="submit">DÉVERROUILLER LE SCELLÉ</button></form><p id="feedback" class="status" role="status"></p>`);
+    $('#side-body').innerHTML='<p>Les enquêteurs hésitent : <strong>code chiffré, coordonnées, simple hasard ?</strong></p><p>Il semble pourtant que les trois valeurs aient été soigneusement choisies.</p><p><strong>Objectif :</strong> ouvrir le scellé.</p>';
+    $('#code-form').addEventListener('submit',e=>{e.preventDefault();const numbers=[$('#code-street').value,$('#code-apt').value,$('#code-day').value];if(numbers.join('-')==='43-26-16'){ $$('#code-form input,#code-form button').forEach(el=>el.disabled=true);feedback('SCELLÉ OUVERT · COMBINAISON ACCEPTÉE',true);solve('Derrière le scellé, un élément photographique potentiellement embarrassant.');}else{attempts++;feedback(attempts===1?'Combinaison incorrecte. Respecte l’ordre indiqué.':'Indice : rue 43, appartement 26, jour 16.');}});
+  }
+  // Show the real picture only when it exists. Missing files never block the investigation.
+  function installEvidencePhoto(){
+    const frame = $('#evidence-photo');
+    const photo = $('#evidence-image');
+    const button = $('#photo-reveal');
+    const status = $('#photo-status');
+    const caption = $('#photo-caption');
+    const note = $('#photo-reveal-note');
+    let active = false;
+    button.addEventListener('click', () => {
+      active = !active;
+      frame.classList.toggle('revealed', active);
+      button.textContent = active ? 'REPLACER LA PIÈCE SOUS SCELLÉS' : 'LEVER LA CENSURE · À VOS RISQUES ET PÉRILS';
+      button.setAttribute('aria-pressed', String(active));
+      caption.textContent = active ? 'PREUVE N° 004 · Document déclassifié' : "Protection de la dignité de l'enquête";
+      note.classList.toggle('visible', active);
+      status.textContent = active ? "Document déclassifié. L’interrogatoire peut reprendre." : 'Document de nouveau placé sous scellés.';
+      beep(active ? 310 : 480);
+    });
+    // Check each common image extension; the visitor never has to select a file.
+    const locate = (position) => {
+      if (!frame.isConnected) return;
+      if (position >= PHOTO_CANDIDATES.length) {
+        status.textContent = 'Photographie non fournie. La pièce reste censurée, mais l’enquête continue normalement.';
+        return;
+      }
+      const probe = new Image();
+      probe.onload = () => {
+        if (!frame.isConnected) return;
+        photo.src = PHOTO_CANDIDATES[position];
+        frame.classList.add('has-image');
+        button.hidden = false;
+        status.textContent = 'Pièce n° 004 localisée. Une autorisation est nécessaire pour lever la censure.';
+      };
+      probe.onerror = () => locate(position + 1);
+      probe.src = PHOTO_CANDIDATES[position];
+    };
+    locate(0);
+  }
+
+  function renderInterview(){
+    paper('DOCUMENT 03-C','La photographie sous scellés.',`
+      <p class="paper-copy">Une photographie a été saisie. Son contenu ne présente aucune valeur médico-légale. Les enquêteurs ont néanmoins exigé une audition du suspect.</p>
+      <div class="photo-case">
+        <div class="photo" id="evidence-photo" role="group" aria-label="Pièce à conviction photographique, placée sous censure">
+          <img id="evidence-image" alt="Photographie présentée comme pièce à conviction, révélée à la demande" loading="eager">
+          <span class="censored" aria-hidden="true">CONTENU CENSURÉ<br>ACCÈS RESTREINT</span>
+          <small id="photo-caption">Protection de la dignité de l'enquête</small>
+        </div>
+        <button class="paper-button photo-action" id="photo-reveal" type="button" hidden aria-pressed="false">LEVER LA CENSURE · À VOS RISQUES ET PÉRILS</button>
+        <p class="photo-status" id="photo-status" role="status">Recherche de la pièce photographique…</p>
+        <p class="photo-reveal-note" id="photo-reveal-note">PIÈCE AUTHENTIFIÉE. Le laboratoire réclame immédiatement sa mutation.</p>
+      </div>
+      <div class="note"><b>NOTE DE SAISIE</b>La destinataire avait pourtant formulé une consigne extrêmement claire. L'auteur estime avoir respecté l'interdiction « techniquement ». Le service juridique refuse de commenter.</div>
+      ${audioWidget('interview','Interrogatoire du suspect')}
+      <label class="form-label">Qualification retenue par les enquêteurs</label>
+      <button class="choice" data-answer="0" type="button">A. Tentative préméditée de manipulation psychologique.</button>
+      <button class="choice" data-answer="1" type="button">B. Atteinte caractérisée à la dignité du dossier, par humour douteux.</button>
+      <button class="choice" data-answer="0" type="button">C. Photographie de nature scientifique dont l'intérêt reste à établir.</button>
+      <p id="feedback" class="status" role="status"></p>`);
+    $('#side-body').innerHTML='<p><strong>Une braguette. Un doigt. Un prénom.</strong> Tous ces éléments sont avérés dans les témoignages.</p><p>Le suspect parle de « démarche artistique ».</p><p>Les enquêteurs réclament des congés.</p><p><strong>Objectif :</strong> qualifier la pièce.</p>';
+    installEvidencePhoto();
+    $$('#sheet .choice').forEach(button=>button.addEventListener('click',()=>{if(solved)return;if(button.dataset.answer==='1'){button.classList.add('right');$$('#sheet .choice').forEach(el=>el.disabled=true);feedback('QUALIFICATION RETENUE. La dignité du dossier n’a pas survécu.',true);solve('L’interrogatoire est clos. Le dernier rapport est arrivé du laboratoire.');}else{attempts++;feedback(attempts===1?'Hypothèse rejetée. Le suspect paraît surtout très fier de lui.':'On cherche une atteinte à la dignité, pas une découverte scientifique.');}}));
+  }
+  function renderReport(){
+    paper('DOCUMENT 04-D','Expertise médico-légale.',`
+      <p class="paper-copy">Les constatations sont anormales. Le sujet reste en parfaite santé, mais son comportement a changé. Une expertise complémentaire a été demandée.</p>
+      <div class="report" aria-label="Résumé de l'expertise">
+        <div class="report-row"><span>État du sujet</span><span>VIVANT</span></div>
+        <div class="report-row"><span>Violence constatée</span><span>AUCUNE</span></div>
+        <div class="report-row"><span>Victime identifiée</span><span>AUCUNE</span></div>
+        <div class="report-row"><span>Sourires inexpliqués</span><span>RÉCURRENTS</span></div>
+        <div class="report-row"><span>Envie de retrouver une personne</span><span>PERSISTANTE</span></div>
+        <div class="report-row"><span>Volonté de guérison</span><span>ABSENTE</span></div>
+      </div>
+      <div class="note"><b>ANNOTATION MANUSCRITE DU MÉDECIN</b>« En vingt ans de carrière, je n'avais jamais rencontré un cas semblable. Le sujet est parfaitement conscient de son état. Plus inquiétant encore : il affirme ne souhaiter aucun traitement. »</div>
+      <p class="paper-copy"><strong>Une dernière anomalie :</strong> celui que l'on appelait « suspect » demande à parler seul. Sans filtre vocal. Sans avocat. Sans témoin.</p>
+      <label class="form-label">Quelle est la seule conclusion compatible avec ce rapport ?</label>
+      <button class="choice" data-answer="0" type="button">A. Une victime a nécessairement été dissimulée.</button>
+      <button class="choice" data-answer="1" type="button">B. Il n'y a peut-être jamais eu de crime à élucider.</button>
+      <button class="choice" data-answer="0" type="button">C. La chouette est responsable de toutes les anomalies.</button>
+      <p id="feedback" class="status" role="status"></p>`);
+    $('#side-body').innerHTML='<p>Aucune trace de violence, aucune victime, aucun acte criminel identifié.</p><p>Pourtant, le sujet affirme que <strong>sa vie a changé irréversiblement</strong>.</p><p><strong>Objectif :</strong> autoriser la dernière déposition.</p>';
+    $$('#sheet .choice').forEach(button=>button.addEventListener('click',()=>{if(solved)return;if(button.dataset.answer==='1'){button.classList.add('right');$$('#sheet .choice').forEach(el=>el.disabled=true);feedback('CONCLUSION ADMISE. Dernière déposition autorisée.',true);solve('Un enregistrement non altéré a été versé au dossier.');}else{attempts++;feedback(button.textContent.includes('chouette')?'La chouette refuse une nouvelle fois de témoigner.':'Aucune preuve ne permet de retenir cette hypothèse.');}}));
+  }
+  function setupConfession(){
+    const area=$('#final-recording');area.innerHTML=audioWidget('confession','Confession finale · voix d’origine');
+    installAudio(area);
+  }
+  function restart(){chapter=0;solved=false;show('intro');beep(440);}
+  $('#start').addEventListener('click',()=>{chapter=0;loadChapter();beep();});
+  $('#show-verdict').addEventListener('click',()=>{show('ending');beep(650);});
+  $('#restart').addEventListener('click',restart);
+  $('#play-again').addEventListener('click',restart);
+  $('#effects').addEventListener('click',()=>{soundOn=!soundOn;$('#effects').textContent=soundOn?'♪ EFFETS : OUI':'♪ EFFETS : NON';$('#effects').setAttribute('aria-pressed',String(soundOn));beep(700);});
+  </script>
+</body>
+</html>
